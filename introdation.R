@@ -75,3 +75,6 @@ tm_shape(swc)+
   tm_fill(c("Y04", "Y09"), palette = "Blues", breaks = my_breaks)
 
 tmap_mode("plot")
+
+
+
