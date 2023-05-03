@@ -1,0 +1,122 @@
+---
+title: "Enviromental statistics homework"
+author: "Daniil Polishchuk"
+date: "2023-04-30"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## The mean squared error as a function of $\rho$
+
+### Exercise:
+
+obtain (and store) k = 1000 simulation from Moran's I and APLE sampling distribution for "some" values of $\rho$ ranging from 0 to 0.95 and obtain the plot of MSE vs rho
+
+### Solution
+
+Before the solution let's run some global objects and variables from previous lectures.
+
+```{r glob_obj, message=FALSE, warning=FALSE}
+
+library(sf)
+library(tmap)
+library(spdep)
+library(tidyverse)
+
+#read the italian provinces map 
+map <- read_sf("map-folder/map.shp")
+
+map_nblist <- poly2nb(map)#the adjacency matrix
+
+wlist <- nb2listw(map_nblist, style = "B")#adjacency matrix  in list form 
+
+wlist_til <- nb2listw(map_nblist, style = "W")#row-standardised adj. matrixin list form 
+
+n <- nrow(map)
+w <- matrix(0, nrow = n, ncol = n)
+for(k in 1:n){
+  w[k, wlist$neighbours[[k]] ]<- 1 
+}
+
+w_til <- w/rowSums(w)
+
+```
+
+Well, firstly, let's generate a vector of $\rho$, where $0 \leqslant \rho \leqslant 0.95$. Let's pick 20 points to get a more smooth graph.
+
+```{r rho}
+n_draw = 20
+rho <- seq(from = 0, to =  0.95, length.out = n_draw)
+
+```
+
+Then I create two numeric vectors to store results of simulation.
+
+```{r numeric_vectors}
+
+mse_moran_sim <- numeric(n_draw)#vector of moran's I
+mse_aple_sim <- numeric(n_draw)#vector of aple
+
+```
+
+Then make the simulation with $K = 1000$
+
+```{r simulation, echo=TRUE, message=FALSE, warning=FALSE}
+
+library(spatialreg)
+library(mvtnorm)
+
+k = 1000
+
+for(j in 1:n_draw){
+  
+  In <- diag(n)
+  
+  sigma_sar <- solve(
+    t(In - rho[j] * w_til) %*% (In - rho[j] * w_til)
+  )
+  
+  # simulate the moran's I and aple 
+  
+  moran_sim <- numeric(k)
+  aple_sim <- numeric(k)
+  
+  for(i in 1:k){
+    Y <- c(mvtnorm::rmvnorm(1, sigma = sigma_sar) )
+    Y <- Y - mean(Y)
+    moran_sim[i] <- moran(Y, wlist_til, n = n, S0 = n)$I
+    aple_sim[i] <- aple(Y, wlist_til)
+  }
+  
+  #store the result of simulation 
+  mse_moran_sim[j] <- mean((moran_sim - rho[j])^2)
+  mse_aple_sim[j] <- mean((aple_sim - rho[j])^2)
+  
+  
+}
+
+```
+
+### Final plot
+
+Finally, let's draw the graph using ggplot to compare MSEs of Moran's I and APLE
+
+```{r graph, echo=FALSE}
+
+library(ggplot2)
+
+#make a data frame to draw graph with ggplot 
+data <- data.frame(moran = mse_moran_sim, aple = mse_aple_sim)
+
+
+ggplot(data = data, aes(x = rho))+
+  geom_line(aes(y = moran, col = "Moran"))+
+  geom_line(aes(y = aple, col = "ALPE"))+
+  xlab("rho")+ 
+  ylab("MSE")+
+  theme(legend.title=element_blank())+
+  ggtitle("The mean squared error as a function of rho")
+
+
+```

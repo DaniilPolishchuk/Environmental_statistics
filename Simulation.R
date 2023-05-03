@@ -98,6 +98,7 @@ bies_aple <- mean(aple_sim - rho)
 # get clother bies we should increase K(as we use montecarlo method)
 
 #mse 
+rho = 0
 mse_moran <- mean((moran_sim - rho)^2)
 mse_aple <- mean((aple_sim - rho)^2)
 mse_moran/mse_aple

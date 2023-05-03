@@ -10,7 +10,7 @@ names(map)
 tm_shape(map) +
   tm_borders()
 
-#read data on seperate waste collection 
+#read data on separate waste collection 
 
 data <- read_csv2("data-folder/separateWC.csv")
 
@@ -58,7 +58,7 @@ for(k in 1:n){
 
 #row standardisation 
 w_til <- w/rowSums(w)
-rowSums(W_til)
+rowSums(w_til)
 
 
 #compute of Moran's 
