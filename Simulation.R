@@ -233,3 +233,5 @@ ggplot(data = simulation)+
 # the plot of MSE vs rho 
 
 
+
+

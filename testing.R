@@ -111,4 +111,12 @@ tm_shape(swc)+
 #obtain a map with "significant areas" 
 #distinguished by quadrant of moran scatter plot 
 
+m <- moran.plot(y, wlist_til, return_df = T)
+mean(y)
+wlist_til
 
+quadr <- attr(lisa_moran,"quadr")$mean
+swc$quadr <- quadr
+tm_shape(swc)+
+  tm_borders()+
+  tm_fill("quadr", title = "", position = c("RIGHT", "TOP"))
