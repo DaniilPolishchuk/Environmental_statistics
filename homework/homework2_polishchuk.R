@@ -31,3 +31,20 @@ swc$quadr <- quadr
 tm_shape(swc)+
   tm_borders()+
   tm_fill("quadr", title = "", position = c("RIGHT", "TOP"))
+
+
+
+#Prof. Solution####
+
+
+highlow <- rep(NA,n)
+y_til <- w_til %*% y
+highlow[y > mean(y) & y_til > mean(y)] <- "HH"
+highlow[y > mean(y) & y_til < mean(y)] <- "HL"
+highlow[y < mean(y) & y_til > mean(y)] <- "LH"
+highlow[y < mean(y) & y_til < mean(y)] <- "LL"
+
+
+highlow_sigfif <- highlow
+highlow_sigfif[significant_pvalues =="not_signif" ] <- NA
+table(highlow_sigfif)

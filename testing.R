@@ -98,7 +98,7 @@ tm_shape(swc)+
 
 #maping areas with "significant" p-values 
 
-significant_pvalues <- ifelse(lisa_moran[,5] < 0.05, "signif", "non_split")
+significant_pvalues <- ifelse(lisa_moran[,5] < 0.05, "signif", "not_signif")
 swc$significant_pvalues <- significant_pvalues
 tm_shape(swc)+
   tm_borders()+
@@ -112,8 +112,7 @@ tm_shape(swc)+
 #distinguished by quadrant of moran scatter plot 
 
 m <- moran.plot(y, wlist_til, return_df = T)
-mean(y)
-wlist_til
+
 
 quadr <- attr(lisa_moran,"quadr")$mean
 swc$quadr <- quadr
