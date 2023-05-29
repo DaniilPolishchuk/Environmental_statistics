@@ -10,16 +10,15 @@ map <- read_sf("map-folder/map.shp")
 class(map)
 names(map)
 
-# check for the type of coerdinates (Projected CRS) 
+#check for the type of coerdinates (Projected CRS) 
 #before we draw 
 
-# map  of the italian provinces 
+# map of the italian provinces 
 
 tm_shape(map) +
   tm_borders()
 
 #read data on seperate waste collection 
-
 data <- read_csv2("data-folder/separateWC.csv")
 
 #join the map object with the data object 
