@@ -37,11 +37,7 @@ legend("bottomright", col=c("blue","red"), lty=c(2,1), legend=c("Poisson", "Empi
 
 
 #8 ----
-fit=ppm(X)
+#-1 in the formula removes the intercept
+fit1=ppm(X, ~-1+cov, covariates = list(cov = cov))
 
-fit2=ppm(X~cov, covariates = list(cov = cov))
-
-anova(fit, fit2, test="Chisq")
-#prefer the inhomogeneous model
-AIC(fit);AIC(fit2)
-#same
+#9
